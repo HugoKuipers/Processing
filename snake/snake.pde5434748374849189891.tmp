@@ -1,0 +1,13 @@
+Slang siegfried = new Slang(); 
+
+void setup() {
+  size(800, 800);
+  rectMode(CENTER);
+}
+
+void draw() {
+  delay(100);
+  background(20);
+  siegfried.move();
+  siegfried.display();
+}

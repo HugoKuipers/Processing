@@ -3,12 +3,16 @@ class Slang {
   int nextY;
   int size;
   int dir;
+  int nextDir;
   int speed;
   int bodyLength;
   ArrayList<int[]> body = new ArrayList<int[]>();
   color slangColor;
   int score;
   boolean disco;
+  boolean picture;
+  PImage img;
+  boolean cheater;
   
   Slang() {
     score = 0;
@@ -16,6 +20,7 @@ class Slang {
     nextY = 408;
     size = 16;
     dir = 2;
+    nextDir = 2;
     speed = 0;
     bodyLength = 4;
     body.add(new int[]{408,408});
@@ -24,9 +29,17 @@ class Slang {
     body.add(new int[]{360,408});
     slangColor = color(255);
     disco = false;
+    picture = false;
+    cheater = false;
+    img = createImage(800,800,RGB);
+    for(int i = 0; i < img.pixels.length; i++) {
+      img.pixels[i] = color(30);
+    }
+    img.updatePixels();
   }
   
   void move() {
+    dir = nextDir;
     if(dir == 1) {
       nextY = body.get(0)[1] - 16;
     }
@@ -72,6 +85,7 @@ class Slang {
   }
   
   void eat() {
+    if(picture) updateImg();
     body.add(new int[]{0,0});
     bodyLength++;
     score++;
@@ -79,7 +93,30 @@ class Slang {
     marik.spawnFood();
   }
   
+  void cheat() {
+    cheater = true;
+    body.add(new int[]{0,0});
+    bodyLength++;
+    if(speed < 70) speed+=2;
+  }
+  
   void die() {
     restart();
+  }
+  
+  void updateImg() {
+    img.loadPixels();
+    snakeImg.loadPixels();
+    int sight = 100;
+    for(int x = 0; x < img.width; x++) {
+      for(int y = 0; y < img.height; y++) {
+        int loc = x+y*width;
+        float d = dist(x,y,marik.foodX,marik.foodY);
+        if(d < sight) {
+          img.pixels[loc] = snakeImg.pixels[loc];
+        }
+      }
+    }
+    img.updatePixels();
   }
 }

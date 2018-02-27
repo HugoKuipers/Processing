@@ -1,19 +1,48 @@
-Slang cornelius = new Slang();
-Food marik = new Food();
+import java.io.File;
+Slang cornelius;
+Food marik;
 int highScore = 0;
-PImage snakeImg;
+int screenSize = 800;
+boolean picture;
+boolean nsfw;
+PImage[] snakeImgs;
+PImage[] nsfwImgs;
 
 void setup() {
+  java.io.File folder = new java.io.File(dataPath("/snakes"));
+  String[] filenames = folder.list();
+  snakeImgs = new PImage[filenames.length];
+  for(int i = 0; i < snakeImgs.length; i++) {
+    snakeImgs[i] = loadImage("/snakes/"+filenames[i]);
+    snakeImgs[i].resize(800,800);
+  }
+  folder = new java.io.File(dataPath("/nsfw"));
+  filenames = folder.list();
+  nsfwImgs = new PImage[filenames.length];
+  for(int i = 0; i < nsfwImgs.length; i++) {
+    nsfwImgs[i] = loadImage("/nsfw/"+filenames[i]);
+    nsfwImgs[i].resize(screenSize,screenSize);
+  }
   size(800, 800);
   rectMode(CENTER);
-  snakeImg = loadImage("data/snake.jpg");
-  snakeImg.resize(800,800);
+  picture = true;
+  nsfw = false;
+  cornelius = new Slang(snakeImgs[int(random(snakeImgs.length))]);
+  marik = new Food();
 }
 
 void draw() {
-  delay(80-cornelius.speed);
-  if(cornelius.picture) {
-    background(cornelius.img);
+  if(cornelius.zaklamp) {
+    delay(40-cornelius.speed);
+  }
+  else {
+    delay(80-cornelius.speed);
+  }
+  if(picture) {
+    if(cornelius.zaklamp) {
+      cornelius.lampZak();
+    }
+    background(cornelius.viewImg);
   }
   else {
     background(30);
@@ -40,10 +69,17 @@ void keyPressed() {
     cornelius.disco = !cornelius.disco;
   }
   else if(key == 'p') {
-    cornelius.picture = !cornelius.picture;
+    picture = !picture;
   }
   else if(key == 'c') {
     cornelius.cheat();
+  }
+  else if(key == 'z' && cornelius.speed < 40) {
+    cornelius.zaklamp = !cornelius.zaklamp;
+    if(!cornelius.zaklamp) cornelius.lampOff();
+  }
+  else if(key == 'r') {
+    nsfw = !nsfw;
   }
 }
 
@@ -55,6 +91,11 @@ void restart() {
   else {
     println("Who cares about your score, you dirty cheater");
   }
-  cornelius = new Slang();
+  if(nsfw) {
+    cornelius = new Slang(nsfwImgs[int(random(nsfwImgs.length))]);
+  }
+  else {
+    cornelius = new Slang(snakeImgs[int(random(snakeImgs.length))]);
+  }
   marik = new Food();
 }

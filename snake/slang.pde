@@ -4,7 +4,7 @@ class Slang {
   int size;
   int dir;
   int nextDir;
-  int speed;
+  float speed;
   int bodyLength;
   ArrayList<int[]> body = new ArrayList<int[]>();
   color slangColor;
@@ -24,6 +24,7 @@ class Slang {
     dir = 2;
     nextDir = 2;
     speed = 0;
+    frameRate(10);
     bodyLength = 4;
     body.add(new int[]{408,408});
     body.add(new int[]{392,408});
@@ -97,17 +98,17 @@ class Slang {
     body.add(new int[]{0,0});
     bodyLength++;
     score++;
-    if(speed < 70) speed+=2;
-    if(speed == 40) zaklamp = false;
+    if(speed < 30) speed+=0.4;
     marik.spawnFood();
+    frameRate(10+speed);
   }
   
   void cheat() {
     cheater = true;
     body.add(new int[]{0,0});
     bodyLength++;
-    if(speed < 70) speed+=2;
-    if(speed == 40) zaklamp = false;
+    if(speed < 30) speed+=0.4;
+    frameRate(10+speed);
   }
   
   void die() {
@@ -139,8 +140,37 @@ class Slang {
     img.loadPixels();
     selectedImg.loadPixels();
     int lampSight = 80;
-    for(int x = 0; x < img.width; x++) {
-      for(int y = 0; y < img.height; y++) {
+    int range = lampSight+20;
+    int minX;
+    int maxX;
+    int minY;
+    int maxY;
+    if(nextX-range < 0) {
+      minX = 0;
+    }
+    else {
+      minX = nextX-range;
+    }
+    if(nextX+range > 800) {
+      maxX = 800;
+    }
+    else {
+      maxX = nextX+range;
+    }
+    if(nextY-range < 0) {
+      minY = 0;
+    }
+    else {
+      minY = nextY-range;
+    }
+    if(nextY+range > 800) {
+      maxY = 800;
+    }
+    else {
+      maxY = nextY+range;
+    }
+    for(int x = minX; x < maxX; x++) {
+      for(int y = minY; y < maxY; y++) {
         int loc = x+y*width;
         float d = dist(x,y,nextX,nextY);
         float r = red(selectedImg.pixels[loc]);

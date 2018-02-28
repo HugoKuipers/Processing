@@ -9,6 +9,7 @@ PImage[] snakeImgs;
 PImage[] nsfwImgs;
 
 void setup() {
+  frameRate(10);
   java.io.File folder = new java.io.File(dataPath("/snakes"));
   String[] filenames = folder.list();
   snakeImgs = new PImage[filenames.length];
@@ -32,12 +33,6 @@ void setup() {
 }
 
 void draw() {
-  if(cornelius.zaklamp) {
-    delay(40-cornelius.speed);
-  }
-  else {
-    delay(80-cornelius.speed);
-  }
   if(picture) {
     if(cornelius.zaklamp) {
       cornelius.lampZak();
@@ -74,7 +69,7 @@ void keyPressed() {
   else if(key == 'c') {
     cornelius.cheat();
   }
-  else if(key == 'z' && cornelius.speed < 40) {
+  else if(key == 'z') {
     cornelius.zaklamp = !cornelius.zaklamp;
     if(!cornelius.zaklamp) cornelius.lampOff();
   }

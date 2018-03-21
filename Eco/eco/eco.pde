@@ -3,6 +3,7 @@ Tree t;
 
 void setup() {
   size(1200,800);
+  frameRate(10);
   t = new Tree();
 }
 

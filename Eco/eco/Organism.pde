@@ -1,6 +1,5 @@
 class Organism {
   Genome dna;
-  int age;
   int energy;
   
   Organism(Genome myDna) {

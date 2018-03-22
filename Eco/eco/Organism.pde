@@ -1,8 +1,9 @@
 class Organism {
   Genome dna;
-  int energy;
+  float energy;
   
   Organism(Genome myDna) {
+    if(myDna.genes.size() == 0) return;
     dna = myDna;
   }
   

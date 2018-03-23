@@ -82,11 +82,11 @@ class Tree extends Organism {
   }
   
   void photosyntesize(int ind) {
-    float eGain = energy*0.1;
-    float eLoss = (PI*(size/2)*(size/2))*((hoogte*hoogte)/1000000);
+    float eGain = energy*0.01;
+    float eLoss = (PI*(size/2)*(size/2))*((hoogte*hoogte)/100000);
     float ePercentKeep = f.checkOverlap(size,hoogte,location,ind);
-    eLoss *= (100/ePercentKeep);
-    energy += eGain - eLoss;
+    eGain *= (100/ePercentKeep);
+    energy = energy + eGain - eLoss;
     if(energy > myMaxEnergy) energy = myMaxEnergy;
   }
   

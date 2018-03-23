@@ -5,7 +5,7 @@ void setup() {
   size(1200,800);
   frameRate(60);
   //frameRate(30);
-  //frameRate(10);
+  frameRate(10);
   //frameRate(5);
   //frameRate(1);
   f = new Forest(1);

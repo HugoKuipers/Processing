@@ -17,7 +17,7 @@ class Forest {
       Tree t = trees.get(i);
       t.update(i);
     }
-    //println(trees.size());
+    println(trees.size());
   }
   
   void display() {
@@ -37,17 +37,16 @@ class Forest {
   
   float checkOverlap(float mySize, float myHoog, PVector myLoc, int index) {
     float ePercent = 100;
-    float totalOpp = (mySize/2)*(mySize/2)*PI;
     for(int i = trees.size()-1; i >= 0; i--) {
       Tree t = trees.get(i);
       if(!(myHoog > t.hoogte) && index != i) {
+        float totalOpp = (mySize/2)*(mySize/2)*PI;
         float d = myLoc.dist(t.location);
         float radii = mySize/2 + t.size/2;
         float r = mySize/2;
         float R = t.size/2;
         if(d < radii) {
           float A = (r*r*acos((d*d+r*r-R*R)/(2*d*r)))+(R*R*acos((d*d-r*r+R*R)/(2*d*R)))-0.5*(sqrt((-d+r+R)*(d+r-R)*(d-r+R)*(d+r+R)));
-          println(A);
           float hMulti;
           if(myHoog == t.hoogte) {
             hMulti = 0.5;
@@ -55,9 +54,10 @@ class Forest {
           else {
             hMulti = 1;
           }
-          float removePercentage = map(A,0,totalOpp,0,ePercent)*hMulti;
-          ePercent -= removePercentage;
-          println(ePercent);
+          if(!Float.isNaN(A)) {
+            float removePercentage = map(A,0,totalOpp,0,ePercent)*hMulti;
+            ePercent -= removePercentage;
+          }
         }
       }
     }

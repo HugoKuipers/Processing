@@ -47,6 +47,7 @@ class Forest {
         float R = t.size/2;
         if(d < radii) {
           float A = (r*r*acos((d*d+r*r-R*R)/(2*d*r)))+(R*R*acos((d*d-r*r+R*R)/(2*d*R)))-0.5*(sqrt((-d+r+R)*(d+r-R)*(d-r+R)*(d+r+R)));
+          //println(acos((d*d+r*r-R*R)/(2*d*r)),((d*d+r*r-R*R)/(2*d*r)));
           float hMulti;
           if(myHoog == t.hoogte) {
             hMulti = 0.5;

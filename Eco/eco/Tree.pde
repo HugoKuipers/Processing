@@ -4,6 +4,7 @@ class Tree extends Organism {
   float maxSize;
   float hoogte;
   float myMaxEnergy;
+  float leafPercentage;
   float energyLvl;
   float growthSpeedSize;
   float growthSpeedHoogte;
@@ -21,6 +22,7 @@ class Tree extends Organism {
     maxSize = dna.getGene("max_size",0);
     energy = int((PI*(size/2)*(size/2))*(energyLvl/10));
     myMaxEnergy = (PI*(size/2)*(size/2))*(energyLvl/10)+1;
+    leafPercentage = 50;
     hoogte = 1;
     growthSpeedSize = dna.getGene("growth_speed_size",0);
     growthSpeedHoogte = dna.getGene("growth_speed_hoogte",0);
@@ -51,6 +53,7 @@ class Tree extends Organism {
     maxSize = dna.getGene("max_size",0);
     myMaxEnergy = (PI*(size/2)*(size/2))*(energyLvl/10)+1;
     energy = int((PI*(size/2)*(size/2))*(energyLvl/10));
+    leafPercentage = 50;
     hoogte = 1;
     growthSpeedSize = dna.getGene("growth_speed_size",0);
     growthSpeedHoogte = dna.getGene("growth_speed_hoogte",0);
@@ -85,8 +88,12 @@ class Tree extends Organism {
     float eGain = energy*0.01;
     float eLoss = (PI*(size/2)*(size/2))*((hoogte*hoogte)/100000);
     float ePercentKeep = f.checkOverlap(size,hoogte,location,ind);
-    eGain *= (100/ePercentKeep);
+    println(eGain, ePercentKeep);
+    eGain *= (ePercentKeep/100);
+    println(eGain, 100/ePercentKeep);
+    println(energy);
     energy = energy + eGain - eLoss;
+    println(energy);
     if(energy > myMaxEnergy) energy = myMaxEnergy;
   }
   

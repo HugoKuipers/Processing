@@ -14,10 +14,11 @@ class Forest {
   
   void update() {
     for(int i = trees.size()-1; i >= 0; i--) {
+      if(i >= trees.size()) i = trees.size()-1;
       Tree t = trees.get(i);
       t.update(i);
     }
-    println(trees.size());
+    //println(trees.size());
   }
   
   void display() {
@@ -31,8 +32,31 @@ class Forest {
     trees.add(new Tree(myDna, spawn));
   }
   
-  void treeDies() {
-    //
+  void treeDies(int ind) {
+    trees.remove(ind);
+  }
+  
+  void treeDies(Tree t) {
+    for(int i = trees.size()-1; i >= 0; i--) {
+      Tree t2 = trees.get(i);
+      if(t == t2) {
+        trees.remove(i);
+        break;
+      }
+    }
+  }
+  
+  void killOldestTree() {
+    int record = 0;
+    float recordAge = 0;
+    for(int i = 0; i < trees.size(); i++) {
+      Tree t = trees.get(i);
+      if(t.age > recordAge) {
+        recordAge = t.age;
+        record = i;
+      }
+    }
+    treeDies(record);
   }
   
   float checkOverlap(float mySize, float myHoog, PVector myLoc, int index) {

@@ -13,24 +13,30 @@ class Tree extends Organism {
   int reproDown;
   int reproCountdown;
   color myColor;
+  color borderColor;
   
-  Tree(Genome myDna, PVector spawn) {
-    super(myDna); 
+  void init() {
     myColor = color(map(dna.getGene("color_r",0),0,100,0,255),map(dna.getGene("color_g",0),0,100,0,255),map(dna.getGene("color_b",0),0,100,0,255));
+    borderColor = color(dna.getGene("color_r",0)*2,dna.getGene("color_g",0)*2,dna.getGene("color_b",0)*2);
     energyLvl = dna.getGene("energy_lvl",0);
     size = 4;
-    maxSize = dna.getGene("max_size",0);
+    maxSize = dna.getGene("max_size",0)*2;
     energy = int((PI*(size/2)*(size/2))*(energyLvl/10));
     myMaxEnergy = (PI*(size/2)*(size/2))*(energyLvl/10)+1;
     leafPercentage = 50;
     hoogte = 1;
     growthSpeedSize = dna.getGene("growth_speed_size",0);
     growthSpeedHoogte = dna.getGene("growth_speed_hoogte",0);
-    location = spawn;
-    seedDist = dna.getGene("seed_dist",0)/4;
-    seedAmount = dna.getGene("seed_amount",0)/10;
-    reproDown = dna.getGene("reproduction_cooldown",0)*1;
+    seedDist = float(dna.getGene("seed_dist",0))/4;
+    seedAmount = float(dna.getGene("seed_amount",0))/10;
+    reproDown = dna.getGene("reproduction_cooldown",0)*2+1;
     reproCountdown = reproDown;
+  }
+  
+  Tree(Genome myDna, PVector spawn) {
+    super(myDna);
+    init();
+    location = spawn;
   }
   
   Tree() {
@@ -45,33 +51,21 @@ class Tree extends Organism {
     dna.add("growth_speed_hoogte",10,20);
     dna.add("poison",0,0);
     dna.add("seed_dist",10,20);
-    dna.add("seed_amount",10,10);
+    dna.add("seed_amount",10,12);
     dna.add("reproduction_cooldown",45,55);
-    myColor = color(map(dna.getGene("color_r",0),0,100,0,255),map(dna.getGene("color_g",0),0,100,0,255),map(dna.getGene("color_b",0),0,100,0,255));
-    energyLvl = dna.getGene("energy_lvl",0);
-    size = 4;
-    maxSize = dna.getGene("max_size",0);
-    myMaxEnergy = (PI*(size/2)*(size/2))*(energyLvl/10)+1;
-    energy = int((PI*(size/2)*(size/2))*(energyLvl/10));
-    leafPercentage = 50;
-    hoogte = 1;
-    growthSpeedSize = dna.getGene("growth_speed_size",0);
-    growthSpeedHoogte = dna.getGene("growth_speed_hoogte",0);
+    init();
     location = new PVector(int(random(width)),int(random(height)));
-    seedDist = dna.getGene("seed_dist",0)/4;
-    seedAmount = dna.getGene("seed_amount",0)/10;
-    reproDown = dna.getGene("reproduction_cooldown",0)*1;
-    reproCountdown = reproDown;
   }
   
   void update(int ind) {
+    age++;
     photosyntesize(ind);
     grow();
-    if(energy <= 0 || Float.isNaN(energy)) die(ind);
+    if(energy <= 0 || Float.isNaN(energy)) die();
     if(reproCountdown == 0) {
       reproCountdown = reproDown;
       reproduce();
-      if(energy <= 0) die(ind);
+      if(energy <= 0) die();
     }
     else {
       reproCountdown -= 1;
@@ -79,7 +73,7 @@ class Tree extends Organism {
   }
   
   void display() {
-    //stroke(myColor,map(energy,0,myMaxEnergy,0,255));
+    stroke(borderColor,map(energy,0,myMaxEnergy,0,255));
     fill(myColor,map(energy,0,myMaxEnergy,0,255));
     ellipse(location.x,location.y,size,size);
   }
@@ -88,12 +82,11 @@ class Tree extends Organism {
     float eGain = energy*0.01;
     float eLoss = (PI*(size/2)*(size/2))*((hoogte*hoogte)/100000);
     float ePercentKeep = f.checkOverlap(size,hoogte,location,ind);
-    println(eGain, ePercentKeep);
+    //println(eGain, ePercentKeep);
     eGain *= (ePercentKeep/100);
-    println(eGain, 100/ePercentKeep);
-    println(energy);
+    //println(energy);
     energy = energy + eGain - eLoss;
-    println(energy);
+    //println(energy);
     if(energy > myMaxEnergy) energy = myMaxEnergy;
   }
   
@@ -114,9 +107,17 @@ class Tree extends Organism {
   }
   
   void reproduce() {
+    if(f.trees.size() > 500) {
+      for(int i = 0; i < f.trees.size()-500; i++) {
+        f.killOldestTree();
+      }
+    }
     float eLoss = myMaxEnergy/10 + 10*seedAmount*seedAmount;
+    println(energy,eLoss,seedAmount);
     if(eLoss < energy) {
-      for(int i = 0; i < int(seedAmount); i++) {
+      int seedSpawnAmount = int(seedAmount);
+      if(random(1) < seedAmount % 1) seedSpawnAmount++;
+      for(int i = 0; i < seedSpawnAmount; i++) {
         PVector childSpawn = PVector.random2D();
         childSpawn.normalize();
         float spawnMag = random((seedDist*seedDist)+size);
@@ -130,7 +131,7 @@ class Tree extends Organism {
     energy -= eLoss;
   }
   
-  void die(int ind) {
-    f.trees.remove(ind);
+  void die() {
+    f.treeDies(this);
   }
 }
